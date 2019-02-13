@@ -7,8 +7,10 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -24,7 +26,7 @@ private final BookService bookService;
 		this.bookService = bookService;
 	}
 	
-	@RequestMapping("/")
+	@RequestMapping("/books")
 	public String home(Model model) {
 		List<Book> books = bookService.allBooks();
 		model.addAttribute("books", books);
@@ -41,7 +43,7 @@ private final BookService bookService;
             return "/books/new.jsp";
         } else {
             bookService.createBook(book);
-            return "redirect:/";
+            return "redirect:/books";
         }
     }
     @RequestMapping("/books/{id}")
@@ -49,6 +51,28 @@ private final BookService bookService;
     	Book book = bookService.findBook(id);
     	model.addAttribute("book", book);
     	return "/books/show.jsp";
+    }
+    
+    @RequestMapping("/books/{id}/edit")
+    public String edit(@PathVariable("id") Long id, Model model) {
+        Book book = bookService.findBook(id);
+        model.addAttribute("book", book);
+        return "/books/edit.jsp";
+    }
+    
+    @PutMapping("/books/{id}")
+    public String update(@PathVariable("id") Long id, @Valid @ModelAttribute("book") Book book, BindingResult result) {
+        if (result.hasErrors()) {
+            return "/books/edit.jsp";
+        } else {
+            bookService.updateBook(id, book);
+            return "redirect:/books";
+        }
+    }
+    @RequestMapping(value="/books/{id}/delete", method=RequestMethod.GET) //have to use GET route if using <a> tags
+    public String destroy(@PathVariable("id") Long id) {
+        bookService.deleteBook(id);
+        return "redirect:/books";
     }
 	
 

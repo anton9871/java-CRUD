@@ -15,7 +15,7 @@
             <th>Description</th>
             <th>Language</th>
             <th>Number of Pages</th>
-            <th>Show</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -25,7 +25,7 @@
             <td><c:out value="${book.description}"/></td>
             <td><c:out value="${book.language}"/></td>
             <td><c:out value="${book.numberOfPages}"/></td>
-            <td><a href="/books/${book.id}">Show</a>
+            <td><a href="/books/${book.id}">Show</a> <a href="/books/${book.id}/delete">Delete</a> </td>
         </tr>
         </c:forEach>
     </tbody>
